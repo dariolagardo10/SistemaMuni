@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SistemaMulta</string>
+    <string-array name="expedida_por_array">
+        <item>Maximiliano Maidana</item>
+        <item>Lucas Jardin</item>
+    </string-array>
+
+</resources>

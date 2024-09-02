@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- New Header Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <!-- ImageView for Header -->
+            <ImageView
+                android:id="@+id/ivHeaderImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/prueba"/> <!-- Reemplaza 'tu_imagen' por el nombre real de tu imagen -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SERIE A - 2024"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvNumero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"/>
+        </LinearLayout>
+
+        <!-- Sección Conductor -->
+        <TextView
+            android:id="@+id/tvConductor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Conductor"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:padding="16dp"
+            android:focusable="true"/>
+
+        <LinearLayout
+            android:id="@+id/layoutConductor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"> <!-- Oculto por defecto -->
+
+            <EditText
+                android:id="@+id/etApellidoNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Apellido y Nombre"
+                android:inputType="text"
+                android:minHeight="48dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <EditText
+                android:id="@+id/etDomicilio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Domicilio"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Título Localidad -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Localidad"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/etLocalidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Localidad"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Título Código Postal -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Código Postal"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/etCodPostal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Código Postal"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Título Departamento -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Departamento"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/etDepartamento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Departamento"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Título Expedida por -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Expedida por"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/etExpedidaPor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Expedida por"
+                android:text="Posadas"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Título Provincia -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Provincia"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/etProvincia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Provincia"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Título País -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="País"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/etPais"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="País"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etLicencia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Licencia"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etClase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Clase"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etVencimiento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Vencimiento"
+                android:inputType="date"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+        </LinearLayout>
+
+        <!-- Sección Vehículo -->
+        <TextView
+            android:id="@+id/tvVehiculo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vehículo"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:padding="16dp"
+            android:focusable="true"/>
+
+        <LinearLayout
+            android:id="@+id/layoutVehiculo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"> <!-- Oculto por defecto -->
+
+            <EditText
+                android:id="@+id/etDominio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Dominio"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp"/>
+            <EditText
+                android:id="@+id/etPropietario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Propietario"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp"/>
+            <Spinner
+                android:id="@+id/spinnerTipoDocumento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/etNumeroDocumento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese su número de documento"/>
+            <Spinner
+                android:id="@+id/spinnerMarca"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp"/>
+
+            <EditText
+                android:id="@+id/etOtraMarca"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Otra marca"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp"/>
+
+            <EditText
+                android:id="@+id/etModeloVehiculo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Modelo"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerTipoVehiculo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp"/>
+
+        </LinearLayout>
+
+        <!-- Sección Hecho -->
+        <TextView
+            android:id="@+id/tvHecho"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hecho"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:padding="16dp"
+            android:focusable="true"/>
+
+        <LinearLayout
+            android:id="@+id/layoutHecho"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"> <!-- Oculto por defecto -->
+
+            <Spinner
+                android:id="@+id/spinnerInfraccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp"/>
+
+            <EditText
+                android:id="@+id/etLugar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Lugar de la infracción"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Departamento De Multa"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/etDepartamentoMulta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="DepartamentoMulta"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Municipio Multa"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/etMunicipioMulta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="MunicipioMulta"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+            <EditText
+                android:id="@+id/etMultaInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Información de la multa"
+                android:minHeight="48dp"
+                android:inputType="textMultiLine"
+                android:layout_marginBottom="8dp"/>
+        </LinearLayout>
+
+        <!-- Sección Especificaciones del Cinemómetro/Alcoholímetro -->
+        <TextView
+            android:id="@+id/tvEspecificaciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Especificaciones del Cinemómetro/Alcoholímetro"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:padding="16dp"
+            android:focusable="true"/>
+
+        <LinearLayout
+            android:id="@+id/layoutEspecificaciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"> <!-- Oculto por defecto -->
+
+            <EditText
+                android:id="@+id/etEquipo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Equipo"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etMarcaCinemometro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Marca"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etModeloCinemometro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Modelo"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etSerieCinemometro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="N° de Serie"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etCodAprobacionCinemometro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Código de Aprobación"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etValorCinemometro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Valor"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnTomarFoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tomar Foto"
+            android:minHeight="48dp"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btnConectarImprimir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Imprimir"
+            android:minHeight="48dp"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/tvEstado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Estado: Desconectado"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp"/>
+
+        <ImageView
+            android:id="@+id/ivPhotoPreview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btnConfirmPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirmar Foto"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btnRetakePhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tomar otra Foto"
+            android:visibility="gone"/>
+
+        <!-- Espacio adicional para permitir desplazamiento más fluido -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+    </LinearLayout>
+</ScrollView>
