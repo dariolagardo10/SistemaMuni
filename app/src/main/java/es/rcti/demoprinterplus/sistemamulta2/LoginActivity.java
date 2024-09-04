@@ -1,5 +1,4 @@
 package es.rcti.demoprinterplus.sistemamulta2;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +20,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
-        db = new DatabaseHelper(this); // Asegúrate de que el constructor es correcto
+        db = new DatabaseHelper(this);
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         etNombre = findViewById(R.id.etNombre);
@@ -64,8 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (username.isEmpty() || password.isEmpty() || nombre.isEmpty() || apellido.isEmpty() || legajo.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Insertar datos sin foto por ahora
-                    boolean insertData = db.insertData(username, password, nombre, apellido, legajo, null);
+                    boolean insertData = db.insertData(username, password, nombre, apellido, legajo,null);
                     if (insertData) {
                         Toast.makeText(LoginActivity.this, "Registro exitoso", Toast.LENGTH_SHORT).show();
                         toggleRegistrationFields(false);
@@ -75,10 +73,10 @@ public class LoginActivity extends AppCompatActivity {
                 }
             } else {
                 toggleRegistrationFields(true);
+                // Hacer scroll hacia abajo cuando se activa el registro
                 scrollView.post(() -> scrollView.fullScroll(ScrollView.FOCUS_DOWN));
             }
         });
-
     }
 
     private void toggleRegistrationFields(boolean show) {

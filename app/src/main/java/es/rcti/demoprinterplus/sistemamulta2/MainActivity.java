@@ -1,6 +1,7 @@
 package es.rcti.demoprinterplus.sistemamulta2;
 
 import android.graphics.Bitmap;
+import java.util.concurrent.Executors;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -41,6 +42,7 @@ import java.util.Random;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Spinner;
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvNumero;
     private TextView  tvEncabezado;
     private EditText etDepartamentoMulta;
+    private Spinner spinnerExpedidaPor;
     private EditText etMunicipioMulta;
     private EditText etModeloVehiculo;
     private final int ANCHO_IMG_58_MM = 384;
@@ -130,10 +133,13 @@ public class MainActivity extends AppCompatActivity {
         etLocalidad.setText("Posadas");
         etProvincia.setText("Misiones");
         etDepartamento.setText("Capital");
+        etDepartamentoMulta.setText("Capital");
         etLocalidad.setText("Posadas");
         etProvincia.setText("Misiones");
         etCodPostal.setText("3300");
         etPais.setText("Argentina");
+        etMunicipioMulta.setText("Posadas");
+
         generateRandomNumber();
         String username = getIntent().getStringExtra("USERNAME");
         if (username != null) {
@@ -153,53 +159,54 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSIONS);
         } else {
+            // Show loading indicator
+            ProgressBar progressBar = findViewById(R.id.progressBar);
+            progressBar.setVisibility(View.VISIBLE);
+
             fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            Executors.newSingleThreadExecutor().execute(() -> {
+                                final StringBuilder addressText = new StringBuilder();
                                 Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
                                 try {
                                     List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                                     if (addresses != null && !addresses.isEmpty()) {
                                         Address address = addresses.get(0);
-                                        String thoroughfare = address.getThoroughfare(); // Calle
-                                        String subThoroughfare = address.getSubThoroughfare(); // Número de calle
+                                        String thoroughfare = address.getThoroughfare();
+                                        String subThoroughfare = address.getSubThoroughfare();
 
-                                        String addressText = "";
                                         if (thoroughfare != null) {
-                                            addressText += thoroughfare;
+                                            addressText.append(thoroughfare);
                                             if (subThoroughfare != null) {
-                                                addressText += " " + subThoroughfare;
+                                                addressText.append(" ").append(subThoroughfare);
                                             }
                                         }
-
-                                        if (addressText.trim().isEmpty()) {
-                                            addressText = String.format("Lat: %.4f, Lon: %.4f", location.getLatitude(), location.getLongitude());
-                                        }
-
-                                        ubicacionActual = addressText;
-                                        etLugar.setText(ubicacionActual);
                                     } else {
-                                        ubicacionActual = String.format("Lat: %.4f, Lon: %.4f", location.getLatitude(), location.getLongitude());
-                                        etLugar.setText(ubicacionActual);
+                                        addressText.append(String.format("Lat: %.4f, Lon: %.4f", location.getLatitude(), location.getLongitude()));
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    ubicacionActual = String.format("Lat: %.4f, Lon: %.4f", location.getLatitude(), location.getLongitude());
-                                    etLugar.setText(ubicacionActual);
+                                    addressText.append("Error al obtener la ubicación");
                                 }
-                            } else {
-                                mostrarMensaje("Ubicación no disponible");
-                                ubicacionActual = "Ubicación no disponible";
-                                etLugar.setText(ubicacionActual);
-                            }
+
+                                runOnUiThread(() -> {
+                                    etLugar.setText(addressText.toString());
+                                    progressBar.setVisibility(View.GONE);
+                                });
+                            });
+                        } else {
+                            runOnUiThread(() -> {
+                                etLugar.setText("Ubicación no disponible");
+                                progressBar.setVisibility(View.GONE);
+                            });
                         }
                     })
                     .addOnFailureListener(e -> {
-                        mostrarMensaje("Error al obtener la ubicación: " + e.getMessage());
-                        ubicacionActual = "Error al obtener la ubicación";
-                        etLugar.setText(ubicacionActual);
+                        runOnUiThread(() -> {
+                            etLugar.setText("Error al obtener la ubicación");
+                            progressBar.setVisibility(View.GONE);
+                        });
                     });
         }
     }
@@ -259,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+        spinnerExpedidaPor = findViewById(R.id.spinnerExpedidaPor);
         etEquipo = findViewById(R.id.etEquipo);
         etMarcaCinemometro = findViewById(R.id.etMarcaCinemometro);
         etModeloCinemometro = findViewById(R.id.etModeloCinemometro);
@@ -478,6 +486,14 @@ public class MainActivity extends AppCompatActivity {
         spinnerInfraccion.setAdapter(adapterInfraccion);
     }
     private void setupSpinner() {
+        List<String> expedidaPorList = new ArrayList<>();
+        expedidaPorList.add("Seleccione una opción");
+        // Añadir otras opciones si es necesario
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, expedidaPorList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerExpedidaPor.setAdapter(adapter);
+
         List<String> tipoDocumentoList = new ArrayList<>();
         tipoDocumentoList.add("Seleccione un documento");
         tipoDocumentoList.add("DNI");
@@ -490,12 +506,7 @@ public class MainActivity extends AppCompatActivity {
         adapterTipoDocumento.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTipoDocumento.setAdapter(adapterTipoDocumento);
 
-        List<String> expedidaPorList = new ArrayList<>();
-        expedidaPorList.add("Seleccione una opción");
-        ArrayAdapter<String> adapterExpedidaPor = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, expedidaPorList);
-        adapterExpedidaPor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-       // spinnerExpedidaPor.setAdapter(adapterExpedidaPor);
+
 
         List<String> marcasList = new ArrayList<>();
         marcasList.add("Seleccione una marca");
@@ -528,10 +539,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSpinnerWithUserName(String fullName) {
-       // ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinnerExpedidaPor.getAdapter();
-       // adapter.insert(fullName, 1);
-       // adapter.notifyDataSetChanged();
-       // spinnerExpedidaPor.setSelection(1);
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinnerExpedidaPor.getAdapter();
+        adapter.insert(fullName, 1); // Insertar el nombre completo como segunda opción
+        adapter.notifyDataSetChanged();
+        spinnerExpedidaPor.setSelection(1); // Seleccionar el nombre completo por defecto
     }
 
     private void checkBluetoothPermissions() {
@@ -653,12 +664,26 @@ public class MainActivity extends AppCompatActivity {
             int anio = calendar.get(Calendar.YEAR);
             int hora = calendar.get(Calendar.HOUR_OF_DAY);
             int minuto = calendar.get(Calendar.MINUTE);
+            // Imprimir título y campos de la sección Conductor
+            byte[] boldOn = new byte[]{0x1B, 0x45, 0x01}; // ESC E 1 (negrita ON)
+            byte[] boldOff = new byte[]{0x1B, 0x45, 0x00}; // ESC E 0 (negrita OFF)
 
             // Imprimir cada campo
+            // Imprimir la imagen
+            printPhoto(R.drawable.logos8);
+
             imprimirCampoEnLinea("SERIE A - 2024", "", lineWidth);
+            imprimirCampoEnLinea(" ", "", lineWidth);
+            imprimirCampoEnLinea(" ", "", lineWidth);
             imprimirCampoEnLinea("Numero de Boleta", tvNumero.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Fecha", String.format("%02d/%02d/%04d", dia, mes, anio), lineWidth);
             imprimirCampoEnLinea("Hora", String.format("%02d:%02d", hora, minuto), lineWidth);
+            // Agregar un salto de línea
+            imprimirCampoEnLinea(" ", "", lineWidth); // Línea en blanco
+            printText(boldOn);
+            imprimirCampoEnLinea("CONDUCTOR", "", lineWidth);
+            printText(boldOff);
+
             imprimirCampoEnLinea("Apellido y Nombre", etApellidoNombre.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Domicilio", etDomicilio.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Localidad", etLocalidad.getText().toString(), lineWidth);
@@ -669,18 +694,35 @@ public class MainActivity extends AppCompatActivity {
             imprimirCampoEnLinea("Licencia", etLicencia.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Tipo de Documento", spinnerTipoDocumento.getSelectedItem().toString(), lineWidth);
             imprimirCampoEnLinea("Numero de Documento", etNumeroDocumento.getText().toString(), lineWidth);
+
+            imprimirCampoEnLinea(" ", "", lineWidth);
+
+            printText(boldOn);
+            imprimirCampoEnLinea("VEHICULO", "", lineWidth);
+            printText(boldOff);
             imprimirCampoEnLinea("Propietario", etPropietario.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Dominio", etDominio.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Marca", spinnerMarca.getSelectedItem().toString(), lineWidth);
-            imprimirCampoEnLinea("Modelo Vehículo", etModeloVehiculo.getText().toString(), lineWidth);
+            imprimirCampoEnLinea("Modelo Vehiculo", etModeloVehiculo.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Tipo de Vehiculo", spinnerTipoVehiculo.getSelectedItem().toString(), lineWidth);
             imprimirCampoEnLinea("Ubicacion actual", ubicacionActual, lineWidth);
+
+            imprimirCampoEnLinea(" ", "", lineWidth);
+            printText(boldOn);
+            imprimirCampoEnLinea("HECHO", "", lineWidth);
+            printText(boldOff);
             imprimirCampoEnLinea("Lugar de infraccion", etLugar.getText().toString(), lineWidth);
-            imprimirCampoEnLinea("Departamento", etDepartamentoMulta.getText().toString(), lineWidth);
+            imprimirCampoEnLinea("Departamento", etDepartamento.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Municipio", etMunicipioMulta.getText().toString(), lineWidth);
+            imprimirCampoEnLinea("Tipo de Infraccion", spinnerInfraccion.getSelectedItem().toString(), lineWidth);
             imprimirCampoEnLinea("Informacion de la multa", etMultaInfo.getText().toString(), lineWidth);
-            imprimirCampoEnLinea("Cinemometro", etModeloCinemometro.getText().toString(), lineWidth);
-            imprimirCampoEnLinea("Modelo Cinemometro", etModeloCinemometro.getText().toString(), lineWidth);
+
+            imprimirCampoEnLinea(" ", "", lineWidth);
+            printText(boldOn);
+            imprimirCampoEnLinea("Cinemometro / Alcoholimetro", "", lineWidth);
+            printText(boldOff);
+            //imprimirCampoEnLinea("Cinemometro", etModeloCinemometro.getText().toString(), lineWidth);
+            imprimirCampoEnLinea("Modelo Cinemometro / Alcoholimetro", etModeloCinemometro.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Equipo", etEquipo.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Marca", etMarcaCinemometro.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Modelo", etModeloCinemometro.getText().toString(), lineWidth);
@@ -688,9 +730,30 @@ public class MainActivity extends AppCompatActivity {
             imprimirCampoEnLinea("Codigo de Aprobacion", etCodAprobacionCinemometro.getText().toString(), lineWidth);
             imprimirCampoEnLinea("Valor", etValorCinemometro.getText().toString(), lineWidth);
 
+            imprimirCampoEnLinea("Expedida por: ", spinnerExpedidaPor.getSelectedItem().toString(), lineWidth);
+            imprimirCampoEnLinea(" ", "", lineWidth);
+            imprimirCampoEnLinea("Firma Inspector", "", lineWidth);
+            imprimirCampoEnLinea(" ", "", lineWidth);
+            imprimirCampoEnLinea(" ", "", lineWidth);
+            imprimirCampoEnLinea(" ", "", lineWidth);
+            // Activar negrita
+            printText(boldOn);
 
-            // Imprimir la imagen
-            printPhoto(R.drawable.prueba);
+            // Texto a imprimir
+
+            String texto = "La presente sera elevada para su intervencion a la autoridad de juzgamiento del tribunal municipal de faltas, "
+                    + "con domicilio en: San Martin 1555 Posadas, donde podra ofrecer descargo y ejercer su derecho de defensa "
+                    + "en los terminos de los articulos: 69, 70 y 71 de la ley 24449.";
+
+            // Imprimir el texto justificado
+            imprimirCampoEnLinea(" ", "", lineWidth);
+            imprimirCampoEnLinea(" ", "", lineWidth);
+            imprimirTextoJustificado(texto, lineWidth);
+
+            // Desactivar negrita
+            printText(boldOff);
+
+
 
             // Avanzar papel y cortar
             outputStream.write(new byte[]{0x0A, 0x0A, 0x0A, 0x0A});
@@ -705,14 +768,72 @@ public class MainActivity extends AppCompatActivity {
             mostrarMensaje("Error de seguridad al imprimir: " + e.getMessage());
         }
     }
+    private void imprimirTextoJustificado(String texto, int lineWidth) throws IOException {
+        String[] palabras = texto.split(" ");
+        StringBuilder linea = new StringBuilder();
+
+        for (String palabra : palabras) {
+            // Verificar si al agregar la palabra se excede el ancho de línea
+            if (linea.length() + palabra.length() + 1 > lineWidth) {
+                // Justificar y escribir la línea
+                escribirLineaJustificada(linea.toString().trim(), lineWidth);
+                linea = new StringBuilder(palabra + " "); // Comenzar nueva línea
+            } else {
+                linea.append(palabra).append(" "); // Agregar palabra a la línea
+            }
+        }
+
+        // Escribir la última línea
+        if (linea.length() > 0) {
+            escribirLineaJustificada(linea.toString().trim(), lineWidth);
+        }
+    }
+
+    private void escribirLineaJustificada(String linea, int lineWidth) throws IOException {
+        String[] palabras = linea.split(" ");
+        int espaciosNecesarios = lineWidth - linea.length() + (palabras.length - 1);
+
+        if (palabras.length == 1) {
+            // Solo una palabra, imprimirla centrada
+            outputStream.write((palabras[0] + "\n").getBytes());
+            return;
+        }
+
+        int espacioExtra = espaciosNecesarios / (palabras.length - 1);
+        int espaciosAdicionales = espaciosNecesarios % (palabras.length - 1);
+
+        StringBuilder lineaJustificada = new StringBuilder();
+
+        for (int i = 0; i < palabras.length; i++) {
+            lineaJustificada.append(palabras[i]);
+            if (i < palabras.length - 1) {
+                // Agregar espacios
+                for (int j = 0; j < espacioExtra; j++) {
+                    lineaJustificada.append(" ");
+                }
+                // Agregar espacios adicionales
+                if (i < espaciosAdicionales) {
+                    lineaJustificada.append(" ");
+                }
+            }
+        }
+
+        outputStream.write((lineaJustificada.toString() + "\n").getBytes());
+    }
 
     public void printPhoto(int img) {
         try {
             Bitmap bmp = BitmapFactory.decodeResource(getResources(), img);
-            if(bmp != null){
+            if (bmp != null) {
                 byte[] command = Utils.decodeBitmap(bmp);
                 outputStream.write(PrinterCommands.ESC_ALIGN_CENTER);
                 printText(command);
+
+                // Imprimir el texto al lado de la imagen
+                outputStream.write(PrinterCommands.ESC_ALIGN_LEFT); // Alinear a la izquierda
+                String texto = "";
+                outputStream.write(texto.getBytes());
+                printNewLine(); // Asegurarse de avanzar a la siguiente línea
             } else {
                 Log.e("Print Photo error", "the file isn't exists");
             }
@@ -722,13 +843,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void printText(byte[] msg) {
+
+    public void printText(byte[] data) {
         try {
-            // Print normal text
-            outputStream.write(msg);
-            printNewLine();
+            if (outputStream != null) {
+                outputStream.write(data);
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            mostrarMensaje("Error al enviar datos a la impresora: " + e.getMessage());
         }
     }
 
@@ -745,7 +867,8 @@ public class MainActivity extends AppCompatActivity {
             valor = "";
         }
 
-        StringBuilder linea = new StringBuilder(etiqueta + ": " + valor);
+        // Cambiar la construcción de la línea para que no incluya ":".
+        StringBuilder linea = new StringBuilder(etiqueta + " " + valor); // Solo un espacio en lugar de ":"
 
         while (linea.length() > 0) {
             if (linea.length() <= lineWidth) {
@@ -758,6 +881,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     private void mostrarMensaje(String mensaje) {
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
     }

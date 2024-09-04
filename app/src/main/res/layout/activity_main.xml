@@ -16,7 +16,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginBottom="16dp">
-
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_centerInParent="true"/>
             <!-- ImageView for Header -->
             <ImageView
                 android:id="@+id/ivHeaderImage"
@@ -24,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/prueba"/> <!-- Reemplaza 'tu_imagen' por el nombre real de tu imagen -->
+                android:src="@drawable/logos8"/> <!-- Reemplaza 'tu_imagen' por el nombre real de tu imagen -->
 
             <TextView
                 android:layout_width="match_parent"
@@ -186,6 +191,13 @@
                 android:layout_height="wrap_content"
                 android:hint="Licencia"
                 android:minHeight="48dp"
+                android:layout_marginBottom="8dp"/>
+            <Spinner
+                android:id="@+id/spinnerExpedidaPor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:padding="8dp"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
@@ -423,6 +435,16 @@
                 android:inputType="numberDecimal"
                 android:minHeight="48dp"
                 android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SERIE A - 2024"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="8dp"/>
+
         </LinearLayout>
 
         <Button
